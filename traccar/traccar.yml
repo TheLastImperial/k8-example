@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traccar
+  labels:
+    app: traccar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traccar
+  template:
+    metadata:
+      labels:
+        app: traccar
+    spec:
+      containers:
+      - name: traccar
+        image: traccar/traccar:6.4-alpine
+        ports:
+        - containerPort: 8082
+        volumeMounts:
+        - mountPath: /opt/traccar/logs
+          name: traccar-logs
+        - mountPath: /opt/traccar/conf
+          name: traccar-config
+      volumes:
+        - name: traccar-logs
+          # mount /data/foo, but only if that directory already exists
+          hostPath:
+            path: /home/imperial/projects/k8/traccar/logs # directory location on host
+            type: Directory
+        - name: traccar-config
+          # mount /data/foo, but only if that directory already exists
+          hostPath:
+            path: /home/imperial/projects/k8/traccar/config # directory location on host
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traccar
+spec:
+  type: NodePort
+  selector:
+    app: traccar
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+      nodePort: 30301

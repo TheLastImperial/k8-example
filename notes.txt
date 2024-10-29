@@ -1,0 +1,8 @@
+kubectl run -ti debug --image mariadb/mariadb:lts-ubi9 --command bash
+
+minikube mount /home/imperial/projects/k8/mariadb/data:/mariadb/data --uid 999 --gid 999
+
+
+minikube mount /home/imperial/projects/k8/mysql/data:/mysql/data --uid 999 --gid 999
+
+minikube mount /home/imperial/projects/k8/postgres/data:/postgres/data --uid 999 --gid 999
